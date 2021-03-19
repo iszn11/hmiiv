@@ -20,7 +20,6 @@ const i32 WINDOW_HEIGHT = 720;
 void InitGl();
 void SystemInit(HWND hwnd);
 bool Init(const u16* filepath);
-void Update(double dt);
 void Draw();
 void Deinit();
 void OnResize(i32 width, i32 height);
@@ -119,29 +118,18 @@ i32 main(const HINSTANCE _hInstance, const i32 nCmdShow)
 
 	const u16* const cmdLine = GetCommandLineW();
 	i32 argc;
-	const u16* const* const argv = CommandLineToArgvW(cmdLine, &argc);
+	u16** const argv = CommandLineToArgvW(cmdLine, &argc);
 
 	Init(argc >= 2 ? argv[1] : NULL);
+	LocalFree(argv);
 	Draw();
 	ShowWindow(hwnd, SW_SHOW);
 
-	BOOL running = TRUE;
-	while (running)
+	MSG msg;
+	while (GetMessageW(&msg, NULL, 0, 0) > 0)
 	{
-		MSG msg;
-		while (PeekMessageW(&msg, NULL, 0, 0, PM_REMOVE))
-		{
-			if (msg.message == WM_QUIT)
-			{
-				running = FALSE;
-			}
-			else
-			{
-				TranslateMessage(&msg);
-				DispatchMessageW(&msg);
-			}
-		}
-		Frame();
+		TranslateMessage(&msg);
+		DispatchMessageW(&msg);
 	}
 	Deinit();
 
@@ -202,15 +190,8 @@ static void InitExtensions()
 
 static void Frame()
 {
-	LARGE_INTEGER nextCounter;
-	QueryPerformanceCounter(&nextCounter);
-
-	const double dt = (double)(nextCounter.QuadPart - lastCounter.QuadPart) / counterFreq.QuadPart;
-	Update(dt);
 	Draw();
-
 	SwapBuffers(hdc);
-	lastCounter = nextCounter;
 }
 
 static i64 WindowProc(const HWND hwnd, const u32 uMsg, const u64 wParam, const i64 lParam)

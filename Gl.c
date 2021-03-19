@@ -34,25 +34,29 @@ glTextureSubImage2D_t _glTextureSubImage2D;
 glTextureParameteri_t _glTextureParameteri;
 glTextureParameterfv_t _glTextureParameterfv;
 glGenerateTextureMipmap_t _glGenerateTextureMipmap;
-glDeleteTextures_t _glDeleteTextures;
 
 glBindVertexArray_t _glBindVertexArray;
 glUseProgram_t _glUseProgram;
 glBindTextureUnit_t _glBindTextureUnit;
-glDrawArrays_t _glDrawArrays;
 
-glProgramUniform1f_t glProgramUniform1f;
-glProgramUniform2f_t glProgramUniform2f;
-glProgramUniformMatrix3fv_t glProgramUniformMatrix3fv;
+glProgramUniform1f_t _glProgramUniform1f;
+glProgramUniform2f_t _glProgramUniform2f;
+glProgramUniformMatrix3fv_t _glProgramUniformMatrix3fv;
 
+#undef glDeleteTextures
+#undef glDrawArrays
 #undef glClear
 #undef glClearColor
 #undef glViewport
 
+void glDeleteTextures(i32 n, const u32* textures);
+void glDrawArrays(u32 mode, i32 first, i32 count);
 void glClear(u32 mask);
 void glClearColor(float red, float green, float blue, float alpha);
 void glViewport(i32 x, i32 y, i32 width, i32 height);
 
+glDeleteTextures_t _glDeleteTextures;
+glDrawArrays_t _glDrawArrays;
 glClear_t _glClear;
 glClearColor_t _glClearColor;
 glViewport_t _glViewport;
@@ -136,6 +140,8 @@ void InitGl()
 	GET_PROC_ADDRESS(glProgramUniform2f);
 	GET_PROC_ADDRESS(glProgramUniformMatrix3fv);
 
+	_glDeleteTextures = &glDeleteTextures;
+	_glDrawArrays = &glDrawArrays;
 	_glClear = &glClear;
 	_glClearColor = &glClearColor;
 	_glViewport = &glViewport;

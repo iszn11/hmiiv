@@ -107,10 +107,6 @@ bool Init(const u16* const filepath)
 	return true;
 }
 
-void Update(const double dt)
-{
-}
-
 void Draw()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
